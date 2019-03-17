@@ -1,4 +1,4 @@
-package p103
+package main
 
 import "fmt"
 import "github.com/golang-collections/collections/stack"
