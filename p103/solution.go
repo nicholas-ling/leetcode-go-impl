@@ -1,7 +1,4 @@
-package main
-
-import "fmt"
-import "github.com/golang-collections/collections/stack"
+package p103
 
 type TreeNode struct {
 	Val   int
@@ -9,47 +6,40 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func main() {
-	root := &TreeNode{Val: 1}
-	root.Left = &TreeNode{Val: 2}
-	root.Left.Left = &TreeNode{Val: 7}
-	root.Left.Right = &TreeNode{Val: 6}
-	root.Right = &TreeNode{Val: 3}
-	root.Right.Left = &TreeNode{Val: 5}
-	root.Right.Right = &TreeNode{Val: 4}
-	fmt.Println(zigzagLevelOrder(root))
-}
-
 func zigzagLevelOrder(root *TreeNode) [][]int {
 	ret := [][]int{}
-	ls, rs := stack.New(), stack.New()
-	ls.Push(root)
+	if root == nil {
+		return ret
+	}
+	ls, rs := []*TreeNode{}, []*TreeNode{}
+	ls = append(ls, root)
 
-	for ls.Len() > 0 || rs.Len() > 0 {
+	for len(ls) > 0 || len(rs) > 0 {
 		row := []int{}
-		if ls.Len() > 0 {
-			for ls.Len() > 0 {
-				node := ls.Pop().(*TreeNode)
+		if len(ls) > 0 {
+			for len(ls) > 0 {
+				node := ls[len(ls)-1]
+				ls = ls[:len(ls)-1]
 				row = append(row, node.Val)
-				if node.Right != nil {
-					rs.Push(node.Right)
-				}
 				if node.Left != nil {
-					rs.Push(node.Left)
+					rs = append(rs, node.Left)
+				}
+				if node.Right != nil {
+					rs = append(rs, node.Right)
 				}
 			}
 		} else {
-			for rs.Len() > 0 {
-				node := rs.Pop().(*TreeNode)
+			for len(rs) > 0 {
+				node := rs[len(rs)-1]
+				rs = rs[:len(rs)-1]
 				row = append(row, node.Val)
-				if node.Left != nil {
-					ls.Push(node.Left)
-				}
 				if node.Right != nil {
-					ls.Push(node.Right)
+					ls = append(ls, node.Right)
+				}
+				if node.Left != nil {
+					ls = append(ls, node.Left)
 				}
 			}
-
 		}
 		ret = append(ret, row)
 	}
